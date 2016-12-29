@@ -472,6 +472,13 @@ step4internal <- function(response, x, weights, index, ctrl) {
         mx <- state$mergedx
 
     nmin <- min(c(ceiling(ctrl$minprob * sum(weights)), ctrl$minbucket))
+        
+       if (bucket_overwrite == TRUE) {
+        if (nmin < ctrl$minbucket) {
+            nmin <- ctrl$minbucket
+        }
+       }
+        
     if (any(table(mx[weights > 0]) < nmin)) return(0)
 
     c_levels <- nlevels(x[weights > 0, drop = TRUE])
@@ -564,11 +571,11 @@ step5 <- function(id = 1L, response, x, weights = NULL, indices = NULL,
 }
 
 chaid_control <- function(alpha2 = 0.05, alpha3 = -1, alpha4 = 0.05,
-                          minsplit = 20, minbucket = 7, minprob = 0.01, 
+                          minsplit = 20, minbucket = 7, bucket_overwrite = FALSE, minprob = 0.01, 
                           stump = FALSE, maxheight = -1) {
 
     ret <- list(alpha2 = alpha2, alpha3 = alpha3, alpha4 = alpha4,
-         minsplit = minsplit, minbucket = minbucket, minprob = minprob,
+         minsplit = minsplit, minbucket = minbucket, bucket_overwrite = bucket_overwrite, minprob = minprob,
          stump = stump, maxheight = maxheight)
     class(ret) <- "chaid_control"
     return(ret)
